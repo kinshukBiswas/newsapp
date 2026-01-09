@@ -4,84 +4,87 @@ import React, { Component } from "react";
 import NewsItem from "./NewsItem";
 
 export default class News extends Component {
+  constructor() {
+    super();
+    this.state = {
+      articles: [],
+      loading: true,
+      page: 1,
+    };
+  }
+
+  async componentDidMount() {
+    let url = `https://newsapi.org/v2/everything?q=cricket&apiKey=cf8c035a536a432597a385b4e0eb7d28&page=1&pageSize=20`;
+    let data = await fetch(url);
+    let parsedData = await data.json();
+    this.setState({ articles: parsedData.articles, loading: false });
+  }
+
+  handlePrev = async () => {
+    let url = `https://newsapi.org/v2/everything?q=cricket&apiKey=cf8c035a536a432597a385b4e0eb7d28&page=${
+      this.state.page - 1
+    }&pageSize=20`;
+    let data = await fetch(url);
+    let parsedData = await data.json();
+    this.setState({
+      articles: parsedData.articles,
+      page: this.state.page - 1,
+      loading: false,
+    });
+  };
+
+  handleNext = async () => {
+    let url = `https://newsapi.org/v2/everything?q=cricket&apiKey=cf8c035a536a432597a385b4e0eb7d28&page=${
+      this.state.page + 1
+    }&pageSize=20`;
+    let data = await fetch(url);
+    let parsedData = await data.json();
+    this.setState({
+      articles: parsedData.articles,
+      page: this.state.page + 1,
+      loading: false,
+    });
+  };
+
   render() {
     return (
       <div className="container">
         <h2>Top Headlines</h2>
         <div className="row">
-          <div className="col-md-4 my-2">
-            <NewsItem
-              title="News Title"
-              description="my Description for the news. this will be changed later as per news."
-              imageUrl="https://platform.theverge.com/wp-content/uploads/sites/2/chorus/uploads/chorus_asset/file/23318435/akrales_220309_4977_0232.jpg?quality=90&strip=all&crop=0%2C10.732984293194%2C100%2C78.534031413613&w=1200"
-            />
-          </div>
-          <div className="col-md-4 my-2">
-            <NewsItem
-              title="News Title"
-              description="my Description for the news. this will be changed later as per news."
-            />
-          </div>
-          <div className="col-md-4 my-2">
-            <NewsItem
-              title="News Title"
-              description="my Description for the news. this will be changed later as per news."
-            />
-          </div>
-          <div className="col-md-4 my-2">
-            <NewsItem
-              title="News Title"
-              description="my Description for the news. this will be changed later as per news."
-            />
-          </div>
-          <div className="col-md-4 my-2">
-            <NewsItem
-              title="News Title"
-              description="my Description for the news. this will be changed later as per news."
-            />
-          </div>
-          <div className="col-md-4 my-2">
-            <NewsItem
-              title="News Title"
-              description="my Description for the news. this will be changed later as per news."
-            />
-          </div>
-          <div className="col-md-4 my-2">
-            <NewsItem
-              title="News Title"
-              description="my Description for the news. this will be changed later as per news."
-            />
-          </div>
-          <div className="col-md-4 my-2">
-            <NewsItem
-              title="News Title"
-              description="my Description for the news. this will be changed later as per news."
-            />
-          </div>
-          <div className="col-md-4 my-2">
-            <NewsItem
-              title="News Title"
-              description="my Description for the news. this will be changed later as per news."
-            />
-          </div>
-          <div className="col-md-4 my-2">
-            <NewsItem
-              title="News Title"
-              description="my Description for the news. this will be changed later as per news."
-            />
-          </div>
-          <div className="col-md-4 my-2">
-            <NewsItem
-              title="News Title"
-              description="my Description for the news. this will be changed later as per news."
-            />
-          </div>
-          <div className="col-md-4 my-2">
-            <NewsItem
-              title="News Title"
-              description="my Description for the news. this will be changed later as per news."
-            />
-          </div>
+          {this.state.articles.map((e) => {
+            return (
+              <div className="col-md-4 my-2" key={e.url}>
+                <NewsItem
+                  title={
+                    e.title.length > 46 ? e.title.slice(0, 46) + "..." : e.title
+                  }
+                  description={
+                    e.description.length > 86
+                      ? e.description.slice(0, 86) + "..."
+                      : e.description
+                  }
+                  imageUrl={e.urlToImage}
+                  newsUrl={e.url}
+                />
+              </div>
+            );
+          })}
+        </div>
+        <div className="container d-flex justify-content-between">
+          <button
+            disabled={this.state.page == 1}
+            className="btn btn-dark justify-content-between"
+            onClick={this.handlePrev}
+          >
+            &larr; Previous
+          </button>
+          <button
+            disabled={this.state.page == 5}
+            className="btn btn-dark d-flex justify-content-between"
+            onClick={this.handleNext}
+          >
+            Next &rarr;
+          </button>
         </div>
       </div>
     );

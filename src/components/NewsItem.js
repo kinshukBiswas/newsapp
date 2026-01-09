@@ -4,16 +4,23 @@ import React, { Component } from "react";
 
 export default class NewsComp1 extends Component {
   render() {
-    let { title, description, imageUrl } = this.props;
+    let { title, description, imageUrl, newsUrl } = this.props;
     return (
       <div>
-        <div className="card" style={{ width: 18 + "rem" }}>
-          <img src={imageUrl} className="card-img-top" alt="..." />
+        <div className="card" style={{ width: "18rem" }}>
+          <img src={imageUrl} className="card-img-top" alt="" />
           <div className="card-body">
-            <h5 className="card-title">{title}</h5>
+            <h5 className="card-title" title={title}>
+              {title}
+            </h5>
             <p className="card-text">{description}</p>
-            <a href="/" className="btn btn-primary">
-              Go somewhere
+            <a
+              href={newsUrl}
+              className="btn btn-primary"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Read More Here &rarr;
             </a>
           </div>
         </div>
