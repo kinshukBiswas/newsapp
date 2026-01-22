@@ -13,7 +13,9 @@ export default class NewsComp1 extends Component {
             <h5 className="card-title" title={title}>
               {title}
             </h5>
-            <p className="card-text">{description}</p>
+            <p className="card-text">
+              {description == null ? "No description available" : description}
+            </p>
             <a
               href={newsUrl}
               className="btn btn-primary"
