@@ -8,8 +8,7 @@ export default class Navbar extends Component {
       <>
         <nav className="navbar navbar-expand-lg bg-body-tertiary">
           <div className="container-fluid">
-            {/*eslint-disable-next-line */}
-            <a className="navbar-brand" href="#">
+            <a className="navbar-brand" href="/">
               NewsMonkey
             </a>
             <button
@@ -29,57 +28,87 @@ export default class Navbar extends Component {
             >
               <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                 <li className="nav-item">
-                  {/*eslint-disable-next-line */}
-                  <a className="nav-link active" aria-current="page" href="#">
+                  <a className="nav-link" aria-current="page" href="/">
                     Home
                   </a>
                 </li>
-                <li className="nav-item">
-                  {/*eslint-disable-next-line */}
-                  <a className="nav-link" href="#">
-                    Link
-                  </a>
-                </li>
                 <li className="nav-item dropdown">
-                  {/*eslint-disable-next-line */}
                   <a
                     className="nav-link dropdown-toggle"
-                    href="#"
+                    href="/"
                     role="button"
                     data-bs-toggle="dropdown"
                     aria-expanded="false"
                   >
-                    Dropdown
+                    Get news on
                   </a>
                   <ul className="dropdown-menu">
                     <li>
-                      {/*eslint-disable-next-line */}
-                      <a className="dropdown-item" href="#">
-                        Action
+                      <a href="/" className="dropdown-item">
+                        Business
                       </a>
                     </li>
                     <li>
-                      {/*eslint-disable-next-line */}
-                      <a className="dropdown-item" href="#">
-                        Another action
+                      <a href="/" className="dropdown-item">
+                        Entertainment
                       </a>
                     </li>
                     <li>
-                      <hr className="dropdown-divider" />
+                      <a href="/" className="dropdown-item">
+                        General
+                      </a>
                     </li>
                     <li>
-                      {/*eslint-disable-next-line */}
-                      <a className="dropdown-item" href="#">
-                        Something else here
+                      <a href="/" className="dropdown-item">
+                        Health
+                      </a>
+                    </li>
+                    <li>
+                      <a href="/" className="dropdown-item">
+                        Science
+                      </a>
+                    </li>
+                    <li>
+                      <a href="/" className="dropdown-item">
+                        Sports
+                      </a>
+                    </li>
+                    <li>
+                      <a href="/" className="dropdown-item">
+                        Technology
+                      </a>
+                    </li>
+                    <li>
+                      <a href="/" className="dropdown-item">
+                        World
+                      </a>
+                    </li>
+                    <li>
+                      <a href="/" className="dropdown-item">
+                        Politics
+                      </a>
+                    </li>
+                    <li>
+                      <a href="/" className="dropdown-item">
+                        Travel
+                      </a>
+                    </li>
+                    <li>
+                      <a href="/" className="dropdown-item">
+                        Education
+                      </a>
+                    </li>
+                    <li>
+                      <a href="/" className="dropdown-item">
+                        Lifestyle
+                      </a>
+                    </li>
+                    <li>
+                      <a href="/" className="dropdown-item">
+                        Food
                       </a>
                     </li>
                   </ul>
-                </li>
-                <li className="nav-item">
-                  {/*eslint-disable-next-line */}
-                  <a className="nav-link disabled" aria-disabled="true">
-                    Disabled
-                  </a>
                 </li>
               </ul>
             </div>

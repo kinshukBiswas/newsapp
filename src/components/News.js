@@ -5,6 +5,13 @@ import NewsItem from "./NewsItem";
 import Loader from "./Loader";
 
 export default class News extends Component {
+  static defaultProps = {
+    category: "general",
+  };
+
+  static propTypes = {
+    category: PropTypes.string,
+  };
   date = new Date(Date.now() - 86400000).toLocaleDateString("en-CA");
   constructor() {
     super();
@@ -19,7 +26,7 @@ export default class News extends Component {
   }
 
   async componentDidMount() {
-    let url = `https://newsapi.org/v2/everything?q=india&from=${
+    let url = `https://newsapi.org/v2/everything?q=${this.props.category}&from=${
       this.date
     }&sortBy=publishedAt&apiKey=cf8c035a536a432597a385b4e0eb7d28&page=${
       this.state.page
@@ -35,7 +42,7 @@ export default class News extends Component {
   }
 
   handlePrev = async () => {
-    let url = `https://newsapi.org/v2/everything?q=india&from=${
+    let url = `https://newsapi.org/v2/everything?q=${this.props.category}&from=${
       this.date
     }&sortBy=publishedAt&apiKey=cf8c035a536a432597a385b4e0eb7d28&page=${
       this.state.page - 1
@@ -54,7 +61,7 @@ export default class News extends Component {
   };
 
   handleNext = async () => {
-    let url = `https://newsapi.org/v2/everything?q=india&from=${
+    let url = `https://newsapi.org/v2/everything?q=${this.props.category}&from=${
       this.date
     }&sortBy=publishedAt&apiKey=cf8c035a536a432597a385b4e0eb7d28&page=${
       this.state.page + 1
