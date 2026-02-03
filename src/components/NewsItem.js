@@ -4,13 +4,19 @@ import React, { Component } from "react";
 
 export default class NewsComp1 extends Component {
   render() {
-    let { title, description, imageUrl, newsUrl } = this.props;
+    let { title, description, imageUrl, newsUrl, author, date, mouseHoverer } =
+      this.props;
     return (
       <div>
-        <div className="card">
+        <div
+          className="card"
+          style={{
+            height: "500px",
+          }}
+        >
           <img src={imageUrl} className="card-img-top" alt="" />
           <div className="card-body">
-            <h5 className="card-title" title={title}>
+            <h5 className="card-title" title={mouseHoverer}>
               {title}
             </h5>
             <p className="card-text">
@@ -24,6 +30,11 @@ export default class NewsComp1 extends Component {
             >
               Read More Here &rarr;
             </a>
+          </div>
+          <div className="card-footer">
+            <small className="text-body-secondary">
+              By {author} on {date}
+            </small>
           </div>
         </div>
       </div>

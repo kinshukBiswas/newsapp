@@ -25,12 +25,8 @@ export default class News extends Component {
     };
   }
 
-  async componentDidMount() {
-    let url = `https://newsapi.org/v2/everything?q=${this.props.category}&from=${
-      this.date
-    }&sortBy=publishedAt&apiKey=cf8c035a536a432597a385b4e0eb7d28&page=${
-      this.state.page
-    }&pageSize=${this.state.pageSize}`;
+  async updateNews(page) {
+    let url = `https://newsapi.org/v2/everything?q=${this.props.category}&from=${this.date}&sortBy=publishedAt&apiKey=cf8c035a536a432597a385b4e0eb7d28&page=${page}&pageSize=${this.state.pageSize}`;
     this.setState({ loading: true });
     let data = await fetch(url);
     let parsedData = await data.json();
@@ -38,45 +34,24 @@ export default class News extends Component {
       articles: parsedData.articles,
       totalResults: parsedData.totalResults,
       loading: false,
+      page: page,
+      pageContentNo:
+        (page - 1) * this.state.pageSize + 10 > 0
+          ? (page - 1) * this.state.pageSize + 10
+          : 10,
     });
   }
 
+  async componentDidMount() {
+    this.updateNews(this.state.page);
+  }
+
   handlePrev = async () => {
-    let url = `https://newsapi.org/v2/everything?q=${this.props.category}&from=${
-      this.date
-    }&sortBy=publishedAt&apiKey=cf8c035a536a432597a385b4e0eb7d28&page=${
-      this.state.page - 1
-    }&pageSize=${this.state.pageSize}`;
-    this.setState({ loading: true });
-    let data = await fetch(url);
-    let parsedData = await data.json();
-    this.setState({
-      articles: parsedData.articles,
-      page: this.state.page - 1,
-      totalResults: parsedData.totalResults,
-      loading: false,
-      pageSize: this.state.pageSize,
-      pageContentNo: this.state.pageContentNo - 10,
-    });
+    this.updateNews(this.state.page - 1);
   };
 
   handleNext = async () => {
-    let url = `https://newsapi.org/v2/everything?q=${this.props.category}&from=${
-      this.date
-    }&sortBy=publishedAt&apiKey=cf8c035a536a432597a385b4e0eb7d28&page=${
-      this.state.page + 1
-    }&pageSize=${this.state.pageSize}`;
-    this.setState({ loading: true });
-    let data = await fetch(url);
-    let parsedData = await data.json();
-    this.setState({
-      articles: parsedData.articles,
-      page: this.state.page + 1,
-      totalResults: parsedData.totalResults,
-      loading: false,
-      pageSize: this.state.pageSize,
-      pageContentNo: this.state.pageContentNo + 10,
-    });
+    this.updateNews(this.state.page + 1);
   };
 
   render() {
@@ -91,19 +66,28 @@ export default class News extends Component {
                 <div className="col-md-4 my-2" key={e.url}>
                   <NewsItem
                     title={
-                      e.title.length > 46
-                        ? e.title.slice(0, 46) + "..."
+                      e.title.length > 73
+                        ? e.title.slice(0, 73) + "..."
                         : e.title
                     }
                     description={
                       e.description == null
                         ? "No description available"
-                        : e.description.length > 86
+                        : e.description.length > 111
                           ? e.description.slice(0, 86) + "..."
                           : e.description
                     }
                     imageUrl={e.urlToImage}
                     newsUrl={e.url}
+                    author={
+                      e.author !== undefined && e.author !== null
+                        ? e.author
+                        : "Unknown"
+                    }
+                    date={new Date(e.publishedAt)
+                      .toString()
+                      .replace(/GMT\+0530/, "GMT+05:30")}
+                    mouseHoverer={e.title}
                   />
                 </div>
               );
