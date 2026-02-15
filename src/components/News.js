@@ -25,8 +25,8 @@ export default class News extends Component {
     };
   }
 
-  async updateNews(page) {
-    let url = `https://newsapi.org/v2/everything?q=${this.props.category}&from=${this.date}&sortBy=publishedAt&apiKey=cf8c035a536a432597a385b4e0eb7d28&page=${page}&pageSize=${this.state.pageSize}`;
+  async updateNews(page, category = this.props.category) {
+    let url = `https://newsapi.org/v2/everything?q=${category}&from=${this.date}&sortBy=publishedAt&apiKey=cf8c035a536a432597a385b4e0eb7d28&page=${page}&pageSize=${this.state.pageSize}`;
     this.setState({ loading: true });
     let data = await fetch(url);
     let parsedData = await data.json();
@@ -40,6 +40,7 @@ export default class News extends Component {
           ? (page - 1) * this.state.pageSize + 10
           : 10,
     });
+    document.title = `NewsMonkey - ${this.props.category.charAt(0).toUpperCase() + this.props.category.slice(1)}`;
   }
 
   async componentDidMount() {
