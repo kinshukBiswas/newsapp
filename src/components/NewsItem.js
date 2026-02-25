@@ -11,7 +11,7 @@ export default class NewsComp1 extends Component {
         <div
           className="card"
           style={{
-            height: "500px",
+            height: "600px",
           }}
         >
           <img src={imageUrl} className="card-img-top" alt="" />

@@ -34,9 +34,9 @@ export default class Navbar extends Component {
                   </Link>
                 </li>
                 <li className="nav-item dropdown">
+                  {/* eslint-disable-next-line */}
                   <a
                     className="nav-link dropdown-toggle"
-                    // eslint-disable-next-line
                     href="#"
                     role="button"
                     data-bs-toggle="dropdown"
