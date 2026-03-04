@@ -1,8 +1,9 @@
 // eslint-disable-next-line
 import PropTypes from "prop-types";
-import React, { Component } from "react";
+import { Component } from "react";
 import NewsItem from "./NewsItem";
 import Loader from "./Loader";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 export default class News extends Component {
   static defaultProps = {
@@ -25,11 +26,18 @@ export default class News extends Component {
     };
   }
 
+  wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
   async updateNews(page, category = this.props.category) {
+    const startTime = Date.now();
     let url = `https://newsapi.org/v2/everything?q=${category}&language=en&from=${this.date}&sortBy=publishedAt&apiKey=cf8c035a536a432597a385b4e0eb7d28&page=${page}&pageSize=${this.state.pageSize}`;
     this.setState({ loading: true });
     let data = await fetch(url);
     let parsedData = await data.json();
+    const elapsed = Date.now() - startTime;
+    if (elapsed < 1500) {
+      await this.wait(1500 - elapsed);
+    }
     this.setState({
       articles: parsedData.articles,
       totalResults: parsedData.totalResults,
@@ -47,22 +55,39 @@ export default class News extends Component {
     this.updateNews(this.state.page);
   }
 
-  handlePrev = async () => {
-    this.updateNews(this.state.page - 1);
-  };
-
-  handleNext = async () => {
-    this.updateNews(this.state.page + 1);
+  fetchMoreData = async () => {
+    const startTime = Date.now();
+    const nextPage = this.state.page + 1;
+    let url = `https://newsapi.org/v2/everything?q=${this.props.category}&language=en&from=${this.date}&sortBy=publishedAt&apiKey=cf8c035a536a432597a385b4e0eb7d28&page=${nextPage}&pageSize=${this.state.pageSize}`;
+    let data = await fetch(url);
+    let parsedData = await data.json();
+    const elapsed = Date.now() - startTime;
+    if (elapsed < 1500) {
+      await this.wait(1500 - elapsed);
+    }
+    this.setState({
+      articles: parsedData.articles,
+      totalResults: parsedData.totalResults,
+      page: nextPage,
+      pageContentNo: Math.min(nextPage * this.state.pageSize, 100),
+    });
   };
 
   render() {
     return (
       <div className="container">
         <h2 className="text-center">Top Headlines</h2>
-        {this.state.loading && <Loader />}
-        <div className="row">
-          {!this.state.loading &&
-            this.state.articles.map((e) => {
+        {/* {this.state.loading && <Loader />} */}
+        <InfiniteScroll
+          dataLength={
+            this.state.articles == undefined ? 0 : this.state.articles.length
+          }
+          next={this.fetchMoreData}
+          hasMore={this.state.pageContentNo < 100}
+          loader={<Loader />}
+        >
+          <div className="row">
+            {this.state.articles?.map((e) => {
               return (
                 <div className="col-md-4 my-2" key={e.url}>
                   <NewsItem
@@ -93,23 +118,8 @@ export default class News extends Component {
                 </div>
               );
             })}
-        </div>
-        <div className="container d-flex justify-content-between">
-          <button
-            disabled={this.state.page === 1}
-            className="btn btn-dark justify-content-between"
-            onClick={this.handlePrev}
-          >
-            &larr; Previous
-          </button>
-          <button
-            disabled={this.state.pageContentNo === 100}
-            className="btn btn-dark d-flex justify-content-between"
-            onClick={this.handleNext}
-          >
-            Next &rarr;
-          </button>
-        </div>
+          </div>
+        </InfiniteScroll>
       </div>
     );
   }
