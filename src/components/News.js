@@ -26,18 +26,11 @@ export default class News extends Component {
     };
   }
 
-  wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
   async updateNews(page, category = this.props.category) {
-    const startTime = Date.now();
     let url = `https://newsapi.org/v2/everything?q=${category}&language=en&from=${this.date}&sortBy=publishedAt&apiKey=cf8c035a536a432597a385b4e0eb7d28&page=${page}&pageSize=${this.state.pageSize}`;
     this.setState({ loading: true });
     let data = await fetch(url);
     let parsedData = await data.json();
-    const elapsed = Date.now() - startTime;
-    if (elapsed < 1500) {
-      await this.wait(1500 - elapsed);
-    }
     this.setState({
       articles: parsedData.articles,
       totalResults: parsedData.totalResults,
@@ -56,15 +49,10 @@ export default class News extends Component {
   }
 
   fetchMoreData = async () => {
-    const startTime = Date.now();
     const nextPage = this.state.page + 1;
     let url = `https://newsapi.org/v2/everything?q=${this.props.category}&language=en&from=${this.date}&sortBy=publishedAt&apiKey=cf8c035a536a432597a385b4e0eb7d28&page=${nextPage}&pageSize=${this.state.pageSize}`;
     let data = await fetch(url);
     let parsedData = await data.json();
-    const elapsed = Date.now() - startTime;
-    if (elapsed < 1500) {
-      await this.wait(1500 - elapsed);
-    }
     this.setState({
       articles: parsedData.articles,
       totalResults: parsedData.totalResults,
