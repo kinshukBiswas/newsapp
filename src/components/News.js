@@ -27,10 +27,13 @@ export default class News extends Component {
   }
 
   async updateNews(page, category = this.props.category) {
-    let url = `https://newsapi.org/v2/everything?q=${category}&language=en&from=${this.date}&sortBy=publishedAt&apiKey=cf8c035a536a432597a385b4e0eb7d28&page=${page}&pageSize=${this.state.pageSize}`;
+    this.props.setProgress(10);
+    let url = `https://newsapi.org/v2/everything?q=${category}&language=en&from=${this.date}&sortBy=publishedAt&apiKey=${process.env.REACT_APP_NEWS_API_KEY}&page=${page}&pageSize=${this.state.pageSize}`;
     this.setState({ loading: true });
     let data = await fetch(url);
+    this.props.setProgress(25);
     let parsedData = await data.json();
+    this.props.setProgress(75);
     this.setState({
       articles: parsedData.articles,
       totalResults: parsedData.totalResults,
@@ -41,6 +44,7 @@ export default class News extends Component {
           ? (page - 1) * this.state.pageSize + 10
           : 10,
     });
+    this.props.setProgress(100);
     document.title = `NewsMonkey - ${this.props.category.charAt(0).toUpperCase() + this.props.category.slice(1)}`;
   }
 
@@ -50,11 +54,11 @@ export default class News extends Component {
 
   fetchMoreData = async () => {
     const nextPage = this.state.page + 1;
-    let url = `https://newsapi.org/v2/everything?q=${this.props.category}&language=en&from=${this.date}&sortBy=publishedAt&apiKey=cf8c035a536a432597a385b4e0eb7d28&page=${nextPage}&pageSize=${this.state.pageSize}`;
+    let url = `https://newsapi.org/v2/everything?q=${this.props.category}&language=en&from=${this.date}&sortBy=publishedAt&apiKey=${process.env.REACT_APP_NEWS_API_KEY}&page=${nextPage}&pageSize=${this.state.pageSize}`;
     let data = await fetch(url);
     let parsedData = await data.json();
     this.setState({
-      articles: parsedData.articles,
+      articles: this.state.articles.concat(parsedData.articles),
       totalResults: parsedData.totalResults,
       page: nextPage,
       pageContentNo: Math.min(nextPage * this.state.pageSize, 100),
@@ -63,52 +67,60 @@ export default class News extends Component {
 
   render() {
     return (
-      <div className="container">
+      <>
         <h2 className="text-center">Top Headlines</h2>
         {/* {this.state.loading && <Loader />} */}
         <InfiniteScroll
           dataLength={
-            this.state.articles == undefined ? 0 : this.state.articles.length
+            this.state.articles === undefined ? 0 : this.state.articles.length
           }
           next={this.fetchMoreData}
           hasMore={this.state.pageContentNo < 100}
           loader={<Loader />}
         >
-          <div className="row">
-            {this.state.articles?.map((e) => {
-              return (
-                <div className="col-md-4 my-2" key={e.url}>
-                  <NewsItem
-                    title={
-                      e.title.length > 73
-                        ? e.title.slice(0, 73) + "..."
-                        : e.title
-                    }
-                    description={
-                      e.description == null
-                        ? "No description available"
-                        : e.description.length > 111
-                          ? e.description.slice(0, 86) + "..."
-                          : e.description
-                    }
-                    imageUrl={e.urlToImage}
-                    newsUrl={e.url}
-                    author={
-                      e.author !== undefined && e.author !== null
-                        ? e.author
-                        : "Unknown"
-                    }
-                    date={new Date(e.publishedAt)
-                      .toString()
-                      .replace(/GMT\+0530/, "GMT+05:30")}
-                    mouseHoverer={e.title}
-                  />
-                </div>
-              );
-            })}
+          <div
+            className="container"
+            style={{
+              height: "auto",
+              overflow: "hidden",
+            }}
+          >
+            <div className="row">
+              {this.state.articles?.map((e) => {
+                return (
+                  <div className="col-md-4 my-2" key={e.url}>
+                    <NewsItem
+                      title={
+                        e.title.length > 73
+                          ? e.title.slice(0, 73) + "..."
+                          : e.title
+                      }
+                      description={
+                        e.description == null
+                          ? "No description available"
+                          : e.description.length > 111
+                            ? e.description.slice(0, 86) + "..."
+                            : e.description
+                      }
+                      imageUrl={e.urlToImage}
+                      newsUrl={e.url}
+                      author={
+                        e.author !== undefined && e.author !== null
+                          ? e.author
+                          : "Unknown"
+                      }
+                      date={new Date(e.publishedAt)
+                        .toString()
+                        .replace(/GMT\+0530/, "GMT+05:30")}
+                      mouseHoverer={e.title}
+                    />
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </InfiniteScroll>
-      </div>
+      </>
     );
   }
 }

@@ -7,7 +7,10 @@ export default class Navbar extends Component {
   render() {
     return (
       <>
-        <nav className="navbar navbar-expand-lg bg-body-tertiary">
+        <nav
+          data-bs-theme="dark"
+          className="navbar navbar-expand-lg bg-body-tertiary"
+        >
           <div className="container-fluid">
             <Link className="navbar-brand" to="/">
               NewsMonkey
@@ -71,6 +74,11 @@ export default class Navbar extends Component {
                       </Link>
                     </li>
                     <li>
+                      <Link to="/cricket" className="dropdown-item">
+                        Cricket
+                      </Link>
+                    </li>
+                    <li>
                       <Link to="/sports" className="dropdown-item">
                         Sports
                       </Link>
@@ -78,6 +86,11 @@ export default class Navbar extends Component {
                     <li>
                       <Link to="/technology" className="dropdown-item">
                         Technology
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/anime" className="dropdown-item">
+                        Anime
                       </Link>
                     </li>
                   </ul>

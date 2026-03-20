@@ -6,7 +6,7 @@ export default class Loader extends Component {
   render() {
     return (
       <center>
-        <img src={spinner} alt="Loading..." />
+        <img className="my-3" src={spinner} alt="Loading..." />
       </center>
     );
   }

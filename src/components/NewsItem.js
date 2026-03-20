@@ -14,7 +14,16 @@ export default class NewsComp1 extends Component {
             height: "600px",
           }}
         >
-          <img src={imageUrl} className="card-img-top" alt="" />
+          <img
+            src={imageUrl}
+            className="card-img-top"
+            alt=""
+            style={{
+              height: "220px",
+              objectFit: "cover",
+              width: "100%",
+            }}
+          />
           <div className="card-body">
             <h5 className="card-title" title={mouseHoverer}>
               {title}

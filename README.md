@@ -5,6 +5,12 @@ this project was made using `npm create-react-app newsapp`
 
 ## API Key
 
-please note that the _api key_ will be changed later to ensure privacy.
-<br/>
-it is a good practice to hide _api key_ from others
+the api key has been changed.
+
+## clone this project
+
+you can clone this github project using:
+
+```bash
+git clone https://github.com/kinshukBiswas/newsapp.git
+```
