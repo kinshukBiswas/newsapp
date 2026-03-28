@@ -8,16 +8,17 @@ import InfiniteScroll from "react-infinite-scroll-component";
 export default function News(props) {
   let date = new Date(Date.now() - 86400000).toLocaleDateString("en-CA");
   const [articles, setArticles] = useState([]);
+  // eslint-disable-next-line
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
+  // eslint-disable-next-line
   const [totalResults, setTotalResults] = useState(0);
-  const [pageSize, setPageSize] = useState(10);
+  // eslint-disable-next-line
+  const pageSize = 10;
   const [pageContentNo, setPageContentNo] = useState(10);
-
   async function updateNews(page, category = props.category) {
     props.setProgress(10);
     let url = `https://newsapi.org/v2/everything?q=${category}&language=en&from=${date}&sortBy=publishedAt&apiKey=${process.env.REACT_APP_NEWS_API_KEY}&page=${page}&pageSize=${pageSize}`;
-
     setLoading(true);
 
     let data = await fetch(url);
@@ -43,9 +44,8 @@ export default function News(props) {
   }, []);
 
   const fetchMoreData = async () => {
+    let url = `https://newsapi.org/v2/everything?q=${props.category}&language=en&from=${date}&sortBy=publishedAt&apiKey=${process.env.REACT_APP_NEWS_API_KEY}&page=${page + 1}&pageSize=${pageSize}`;
     setPage(page + 1);
-
-    let url = `https://newsapi.org/v2/everything?q=${props.category}&language=en&from=${date}&sortBy=publishedAt&apiKey=${process.env.REACT_APP_NEWS_API_KEY}&page=${page}&pageSize=${pageSize}`;
     let data = await fetch(url);
     let parsedData = await data.json();
     setArticles(articles.concat(parsedData.articles));
@@ -59,7 +59,7 @@ export default function News(props) {
       <InfiniteScroll
         dataLength={articles === undefined ? 0 : articles.length}
         next={fetchMoreData}
-        hasMore={pageContentNo < 100}
+        hasMore={pageContentNo < 100 || totalResults <= 100}
         loader={<Loader />}
       >
         <div

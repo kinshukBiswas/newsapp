@@ -1,5 +1,5 @@
 import "./App.css";
-
+// eslint-disable-next-line
 import React, { Component, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
