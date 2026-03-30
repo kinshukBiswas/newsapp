@@ -6,17 +6,16 @@ import Loader from "./Loader";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 export default function News(props) {
-  let date = new Date(Date.now() - 86400000).toLocaleDateString("en-CA");
+  let date = new Date(Date.now()).toLocaleDateString("en-CA");
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
-  const [totalResults, setTotalResults] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [pageContentNo, setPageContentNo] = useState(10);
 
   async function updateNews(page, category = props.category) {
     props.setProgress(10);
-    let url = `https://newsapi.org/v2/everything?q=${category}&language=en&from=${date}&sortBy=publishedAt&apiKey=${process.env.REACT_APP_NEWS_API_KEY}&page=${page}&pageSize=${pageSize}`;
+    let url = `https://api.currentsapi.services/v1/search?keywords=${category}&language=en&start-date=${date}&apiKey=${process.env.REACT_APP_NEWS_API_KEY}&page_number=${page}&page_size=${pageSize}`;
 
     setLoading(true);
 
@@ -27,8 +26,7 @@ export default function News(props) {
     let parsedData = await data.json();
 
     props.setProgress(75);
-    setArticles(parsedData.articles);
-    setTotalResults(parsedData.totalResults);
+    setArticles(parsedData.news);
     setLoading(false);
     setPage(page);
     setPageContentNo(
@@ -40,16 +38,22 @@ export default function News(props) {
 
   useEffect(() => {
     updateNews(1);
-  }, []);
+  }, [props.category]);
 
   const fetchMoreData = async () => {
     setPage(page + 1);
 
-    let url = `https://newsapi.org/v2/everything?q=${props.category}&language=en&from=${date}&sortBy=publishedAt&apiKey=${process.env.REACT_APP_NEWS_API_KEY}&page=${page}&pageSize=${pageSize}`;
+    let url = `https://api.currentsapi.services/v1/search?keywords=${props.category}&language=en&start-date=${date}&apiKey=${process.env.REACT_APP_NEWS_API_KEY}&page_number=${page}&page_size=${pageSize}`;
     let data = await fetch(url);
     let parsedData = await data.json();
-    setArticles(articles.concat(parsedData.articles));
-    setTotalResults(parsedData.totalResults);
+    setArticles((prev) => {
+      const uniqueArticles = [
+        ...new Map(
+          [...prev, ...parsedData.news].map((item) => [item.id, item]),
+        ).values(),
+      ];
+      return uniqueArticles;
+    });
     setPage(page);
     setPageContentNo(Math.min(page * pageSize, 100));
   };
@@ -72,7 +76,7 @@ export default function News(props) {
           <div className="row">
             {articles?.map((e) => {
               return (
-                <div className="col-md-4 my-2" key={e.url}>
+                <div className="col-md-4 my-2" key={e.id}>
                   <NewsItem
                     title={
                       e.title.length > 73
@@ -86,14 +90,14 @@ export default function News(props) {
                           ? e.description.slice(0, 86) + "..."
                           : e.description
                     }
-                    imageUrl={e.urlToImage}
+                    imageUrl={e.image}
                     newsUrl={e.url}
                     author={
                       e.author !== undefined && e.author !== null
                         ? e.author
                         : "Unknown"
                     }
-                    date={new Date(e.publishedAt)
+                    date={new Date(e.published)
                       .toString()
                       .replace(/GMT\+0530/, "GMT+05:30")}
                     mouseHoverer={e.title}
