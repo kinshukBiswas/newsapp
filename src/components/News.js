@@ -29,9 +29,7 @@ export default function News(props) {
     setArticles(parsedData.news);
     setLoading(false);
     setPage(page);
-    setPageContentNo(
-      (page - 1) * pageSize + 10 > 0 ? (page - 1) * pageSize + 10 : 10,
-    );
+    setPageContentNo(Math.max(page * pageSize, pageSize));
     props.setProgress(100);
     document.title = `NewsMonkey - ${props.category.charAt(0).toUpperCase() + props.category.slice(1)}`;
   }
@@ -41,9 +39,10 @@ export default function News(props) {
   }, [props.category]);
 
   const fetchMoreData = async () => {
-    setPage(page + 1);
+    const nextPage = page + 1;
+    setPage(nextPage);
 
-    let url = `https://api.currentsapi.services/v1/search?keywords=${props.category}&language=en&start-date=${date}&apiKey=${process.env.REACT_APP_NEWS_API_KEY}&page_number=${page}&page_size=${pageSize}`;
+    let url = `https://api.currentsapi.services/v1/search?keywords=${props.category}&language=en&start-date=${date}&apiKey=${process.env.REACT_APP_NEWS_API_KEY}&page_number=${nextPage}&page_size=${pageSize}`;
     let data = await fetch(url);
     let parsedData = await data.json();
     setArticles((prev) => {
@@ -54,8 +53,7 @@ export default function News(props) {
       ];
       return uniqueArticles;
     });
-    setPage(page);
-    setPageContentNo(Math.min(page * pageSize, 100));
+    setPageContentNo(Math.min(nextPage * pageSize, 100));
   };
   return (
     <>
